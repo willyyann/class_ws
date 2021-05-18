@@ -18,18 +18,24 @@
     <include>
       <uri>model://sun</uri>
     </include> 
-    
-    <!-- Apartment Walls -->
+
+    <!-- factory -->
     <include>
-      <uri>model://apartment</uri>
-      <pose>0.491830 0.433522 0 0 0 0</pose>
+      <uri>model://simu_map</uri>
+      <pose>4 0 0 0 0 0</pose>
     </include>
     
+    <!-- Apartment Walls -->
+    <!--include>
+      <uri>model://apartment</uri>
+      <pose>0.491830 0.433522 0 0 0 0</pose>
+    </include-->
+    
     <!-- Human -->
-    <include>
+    <!--include>
 		<uri>model://test_human</uri>
 		<pose>-2.5 4.75 0 0 1.57 -0.8</pose>
-    </include> 	  
+    </include--> 	  
     
     <!-- Set up the solver used for simulation -->  
     <physics name="ode_70iters" type="ode">

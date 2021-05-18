@@ -52,6 +52,7 @@ void Navigation::laserCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 						dwa_obs_robot_region.push_back(robot_laser_pose);
 				}
 		}
+    //std::cout<<"dwa_obs_region.size() = "<<dwa_obs_region.size()<<std::endl;
 }
 
 void Navigation::amclposeCallback(const geometry_msgs::PoseWithCovarianceStamped& msg)
@@ -73,9 +74,11 @@ void Navigation::goalposeCallback(const geometry_msgs::PoseStamped& msg)
 void Navigation::timerCallback(const ros::TimerEvent& event)
 {
     static bool arrival_goal = false;
-    float evalParam[4] = { 1, 2, 1, 2.0};
-    float Kinematic[6] = { 1.0, 0.5, 0.1, 0.1, 0.01, 0.1 };
+    float evalParam[4] = { 1, 2, 1, 3.0};
+    float Kinematic[6] = { 0.5, 0.5, 0.1, 0.1, 0.01, 0.1 };
     float obstacleR = 0.4; //冲突判定用的障碍物半径
+    dwa_predict_pose.clear();
+    dwa_choose_line.clear();
     if(dwa_start)
     {
         std::vector<state> cartraj,realtraj; //cartraj累积存储走过的轨迹点的状态值
@@ -83,7 +86,11 @@ void Navigation::timerCallback(const ros::TimerEvent& event)
         float tdist = sqrt((statex.x - goal_pose.x())*(statex.x - goal_pose.x()) + (statex.y - goal_pose.y())*(statex.y - goal_pose.y()));
         //std::cout<<"dwa start!!"<<std::endl;
         std::cout<<"tdist = "<<tdist<<std::endl;
-        if(tdist < 0.05)arrival_goal = true;
+
+        if(tdist < 0.1)arrival_goal = true;
+        else if(tdist > 0.1 && tdist < 0.5)Kinematic[0] = 0.2;
+        else Kinematic[0] = 0.5;
+
         if(!arrival_goal)
         {
             Eigen::Vector3f dwa_choose_pose(0.0, 0.0, 0.0);
@@ -99,7 +106,16 @@ void Navigation::timerCallback(const ros::TimerEvent& event)
         {
             arrival_goal = false;
             dwa_start = false;
+            tracking_v = 0;
+            tracking_w = 0;
+            std::cout<<"arrival goal!!"<<std::endl;
         }
+        if(use_dwa.no_path)
+        {
+            dwa_start = false;
+            use_dwa.no_path = false;
+        }
+
         geometry_msgs::Twist speed_msg;
 				speed_msg.linear.x = tracking_v;
 				speed_msg.linear.y = 0;

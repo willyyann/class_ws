@@ -56,6 +56,8 @@ float dt = 0.1;//时间[s]`在这里插入代码片`
 class DWA
 {
 public:
+	  DWA();
+		~DWA();
     void robot2world(Eigen::Vector3f target_pos, Eigen::Vector3f robot_pos, float &x, float &y);
     void world2robot(Eigen::Vector3f target_pos, Eigen::Vector3f robot_pos, float &x, float &y);
     controlU DynamicWindowApproach(state cx, std::vector<state> *TrajDb, float *model, Eigen::Vector3f goal, float * evalParam, std::vector<Eigen::Vector3f> ob, std::vector<Eigen::Vector3f> robot_ob, float R, std::vector<Eigen::Vector3f> &dwa_predict_pose, Eigen::Vector3f &dwa_choose_pose);
@@ -66,7 +68,18 @@ public:
     float CalcHeadingEval(state cx, Eigen::Vector3f goal);
     float CalcDistEval(state cx, std::vector<Eigen::Vector3f> ob, float R);
     void NormalizeEval(std::vector<eval_db> *EvalDb);
+		bool no_path;
 };
+
+DWA::DWA()
+{
+		no_path = false;
+}
+
+DWA::~DWA()
+{
+
+}
 
 void DWA::robot2world(Eigen::Vector3f target_pos, Eigen::Vector3f robot_pos, float &x, float &y)
 {
@@ -101,6 +114,7 @@ controlU DWA::DynamicWindowApproach(state cx, std::vector<state> *TrajDb, float 
     if (EvalDb.empty())
 		{
 				std::cout << "no path to goal!!" << std::endl;
+				no_path = true;
 				u.vt = 0;
 				u.wt = 0;
 				return u;

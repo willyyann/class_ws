@@ -32,6 +32,6 @@
   </node>
   
   <!-- 在rviz中显示-->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simulation_environment)/config/navigation.rviz" required="true" />
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find simulation_environment)/config/navigation.rviz" required="true" /-->
   
 </launch>

@@ -21,7 +21,7 @@
 
     <!-- factory -->
     <include>
-      <uri>model://simu_map</uri>
+      <uri>model://factory_simu</uri>
       <pose>4 0 0 0 0 0</pose>
     </include>
     
